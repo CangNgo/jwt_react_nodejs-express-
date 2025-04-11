@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/server.js",
-    "start": "nodemon ./src/server.js"
+    "start": "nodemon ./src/server.js",
+    "prisma:migrate": "prisma migrate dev --env-file .env.development"
   },
   "keywords": [
     "nodejs",
@@ -18,10 +19,13 @@
   },
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.6.0",
+    "cors": "^2.8.5",
     "dotenv": "16.4.5",
     "ejs": "3.1.10",
     "express": "4.19.2",
-    "mongoose": "8.4.4"
+    "pg": "^8.14.1",
+    "prisma": "^6.6.0"
   },
   "devDependencies": {
     "nodemon": "3.1.4"
