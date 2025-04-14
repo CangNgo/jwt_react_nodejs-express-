@@ -4,11 +4,19 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("VITE_DATABASE_URL")
+  url      = env("VITE_POSTGRES_URL")
 }
 
-model User {
+model user {
   id    Int     @id @default(autoincrement())
   email String  @unique
-  name  String?
+  name  String
+  role_id Int
+  role role @relation(fields: [role_id], references: [id])
+}
+
+model role{
+  id Int @id @default(autoincrement())
+  name String @unique
+  user user[]
 }

@@ -11,4 +11,10 @@ Các bước cài đặt: (chế độ development)
 3. Update file .env (nếu cần thiết)
 4. Chạy dự án: npm run dev
 
+tạo table trong db 
+    npx prisma migrate dev --name init
+tạo prisma client 
+    npx prisma generate
+chạy localhost prisma 
+    npx prisma studio
 

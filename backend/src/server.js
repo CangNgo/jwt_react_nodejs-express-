@@ -1,52 +1,45 @@
-require('dotenv').config();
-import { PrismaClient } from './../node_modules/@prisma/client/generator-build/index';
-const express = require('express'); //commonjs
-const configViewEngine = require('./config/viewEngine');
-const apiRoutes = require('./routes/api');
-const connection = require('./config/database');
-const { getHomepage } = require('./controllers/homeController');
-const cors = require("cors")
+require("dotenv").config();
+const express = require("express"); //commonjs
+const configViewEngine = require("./config/viewEngine");
+const userAPI = require("./routes/userRouter");
+const { getHomepage } = require("./controllers/userController");
+const { PrismaClient } = require("@prisma/client");
+const cors = require("cors");
+const { roleRout } = require("./routes/roleRouter");
+const userRoute = require("./routes/userRouter");
 const app = express();
 const port = process.env.PORT || 8888;
-
-const prisma = new PrismaClient();
+const prefix = "/api/v1"
 //config cors
-app.use(cors())
+app.use(cors());
 
 //config req.body
-app.use(express.json()) // for json
-app.use(express.urlencoded({ extended: true })) // for form data
+app.use(express.json()); // for json
+app.use(express.urlencoded({ extended: true })); // for form data
 
 //config template engine
 configViewEngine(app);
 
-const webAPI = express.Router()
-webAPI.get("/", getHomepage)
+const webAPI = express.Router();
+webAPI.get("/", getHomepage);
 
-app.use('/', webAPI);
+app.use("/", webAPI);
 
-//khai báo route
-app.use('/api/v1', apiRoutes);
+//khai báo userAPI
+app.use(prefix, userRoute);
+app.use(prefix, roleRout);
 
-app.get("/user",async (req, res)=>{
-    try {
-        const users = await prisma.user.findMany()
-        res.send(users.json)
-    } catch (error) {
-        console.log(error);
-        
-    }
-})
 
+;
 (async () => {
-    try {
-        //using mongoose
-        // await connection();
+  try {
+    //using mongoose
+    // await connection();
 
-        app.listen(port, () => {
-            console.log(`Backend Nodejs App listening on port ${port}`)
-        })
-    } catch (error) {
-        console.log(">>> Error connect to DB: ", error)
-    }
-})()
+    app.listen(port, () => {
+      console.log(`Backend Nodejs App listening on port ${port}`);
+    });
+  } catch (error) {
+    console.log(">>> Error connect to DB: ", error);
+  }
+})();
