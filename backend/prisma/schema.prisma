@@ -8,15 +8,199 @@ datasource db {
 }
 
 model user {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String
-  role_id Int
-  role role @relation(fields: [role_id], references: [id])
+  id          Int           @id @default(autoincrement())
+  username    String        @unique
+  email       String        @unique
+  name        String
+  role_id     Int
+  profileId   Int
+  role        role          @relation(fields: [role_id], references: [id])
+  post        post[]
+  profile     profile?
+  followers   follow[]      @relation("followers")
+  followeds   follow[]      @relation("followeds")
+  comment     comment[]
+  likePost    likePost[]
+  likeComment likeComment[]
+
+  createdAt DateTime @default(now())
+  createdBy Int?
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  deleted   Boolean  @default(false)
 }
 
-model role{
-  id Int @id @default(autoincrement())
-  name String @unique
-  user user[]
+model role {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String
+  user        user[]
+
+  createdAt DateTime @default(now())
+  createdBy Int?
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  deleted   Boolean  @default(false)
+}
+
+model post {
+  id           Int            @id @default(autoincrement())
+  ownerId      Int
+  originPost   Int
+  text         String
+  media        String[]
+  html         String
+  isShare      Boolean        @default(false)
+  status       Boolean        @default(false)
+  user         user           @relation(fields: [ownerId], references: [id])
+  comment      comment[]
+  likePost     likePost[]
+  likeComment  likeComment[]
+  hastagDetail hastagDetail[]
+
+  createdAt DateTime @default(now())
+  createdBy Int?
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  deleted   Boolean  @default(false)
+}
+
+model profile {
+  id        Int     @id @default(autoincrement())
+  lastName  String
+  firstName String
+  bio       String
+  avatar    String
+  banner    String
+  isKOL     Boolean @default(false)
+  status    Boolean @default(false)
+  userId    Int     @unique
+  user      user    @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  createdBy Int?
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  deleted   Boolean  @default(false)
+}
+
+model follow {
+  id           Int      @id @default(autoincrement())
+  follower     Int
+  followed     Int
+  dateTime     DateTime
+  followerUser user     @relation("followers", fields: [follower], references: [id])
+  followedUser user     @relation("followeds", fields: [followed], references: [id])
+
+  createdAt DateTime @default(now())
+  createdBy Int?
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  deleted   Boolean  @default(false)
+
+  @@unique([follower, followed])
+}
+
+model comment {
+  id         Int      @id @default(autoincrement())
+  ownerId    Int
+  originPost Int
+  text       String
+  media      String[]
+  html       String
+  postId     Int
+  post       post     @relation(fields: [postId], references: [id])
+  user       user     @relation(fields: [ownerId], references: [id])
+
+  createdAt DateTime @default(now())
+  createdBy Int?
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  deleted   Boolean  @default(false)
+}
+
+//like 
+model likePost {
+  userId    Int
+  postId    Int
+  user      user     @relation(fields: [userId], references: [id])
+  post      post     @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now())
+  createdBy Int?
+
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  deleted   Boolean  @default(false)
+
+  @@id([userId, postId])
+}
+
+model likeComment {
+  userId    Int
+  postId    Int
+  user      user     @relation(fields: [userId], references: [id])
+  post      post     @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now())
+
+  createdBy Int?
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  deleted   Boolean  @default(false)
+
+  @@id([userId, postId])
+}
+
+model hastag {
+  id           Int            @id @default(autoincrement())
+  name         String         @unique
+  description  String
+  hastagDetail hastagDetail[]
+
+  createdAt DateTime @default(now())
+  createdBy Int?
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  deleted   Boolean  @default(false)
+}
+
+model hastagDetail {
+  hastagId  Int
+  postId    Int
+  hastag    hastag   @relation(fields: [hastagId], references: [id])
+  post      post     @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now())
+  createdBy Int?
+
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  deleted   Boolean  @default(false)
+
+  @@id([hastagId, postId])
+}
+
+model policy {
+  id     Int     @id @default(autoincrement())
+  name   String
+  status Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  createdBy Int?
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  deleted   Boolean  @default(false)
+}
+
+model complaint {
+  id           Int      @id @default(autoincrement())
+  complainType String
+  ownerId      Int
+  policyId     Int
+  dateTime     DateTime @default(now())
+  status       Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  createdBy Int?
+  updatedAt DateTime @updatedAt
+  updatedBy Int?
+  deleted   Boolean  @default(false)
 }
