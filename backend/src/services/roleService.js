@@ -1,11 +1,11 @@
 const { prisma } = require("../config/database")
 
-const createRole = async (name) =>{
+const createRole = async (name, description) => {
     try {
         const role = await prisma.role.create({
-            name
+            data: { name, description }
         })
-        return name 
+        return role
     } catch (error) {
         console.log("Lỗi khi tạo mới quyền truy cập");
         throw error
@@ -15,16 +15,16 @@ const createRole = async (name) =>{
 const getRoles = async () => {
     try {
         console.log("service");
-        
+
         const roles = await prisma.role.findMany()
         return roles
     } catch (error) {
         console.log("Lỗi khi lấy toàn bộ danh sách quyền truy cập");
-        throw error        
+        throw error
     }
 }
 
 module.exports = {
-    createRole, 
+    createRole,
     getRoles
 }

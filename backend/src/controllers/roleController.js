@@ -1,13 +1,12 @@
 const { createRole, getRoles } = require("../services/roleService")
 
 const createRoleController = async (req, res ) => {
-    try {
-        const role = await createRole()
-        res.send(role.json())
-    } catch (error) {
-        console.log("Lỗi khi lấy quyền truy cập");
-        throw error
-    }
+        const { name , description} = req.body
+        const role = await createRole(name, description)
+        res.status(200).json({
+            mesage: "Tạo mới quyền truy cập thành công", 
+            data: role
+        })
 }
 
 const getRolesController = async (req, res ) => {

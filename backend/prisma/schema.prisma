@@ -13,10 +13,10 @@ model user {
   email       String        @unique
   password    String
   role_id     Int
-  profileId   Int
+  profileId   Int?
   role        role          @relation(fields: [role_id], references: [id])
   post        post[]
-  profile     profile?
+  profile     profile?     
   followers   follow[]      @relation("followers")
   followeds   follow[]      @relation("followeds")
   comment     comment[]

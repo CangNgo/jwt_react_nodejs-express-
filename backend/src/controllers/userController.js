@@ -1,4 +1,5 @@
-const { getAllUsers, createUser } = require("../services/userService");
+const { getRoles } = require("../services/roleService");
+const { getAllUsers, createUser, getRoleUser } = require("../services/userService");
 
 const getHomepage = async (req, res) => {
   return res.render("sample.ejs");
@@ -20,11 +21,13 @@ const fetchAllUser = async (req, res) => {
 const postUser = async (req, res) => {
   const body = req.body;
   console.log(body); // Body đã được parse thành object JavaScript
-  const { username, email } = body;
+  const { username, email, password } = body;
   // Xử lý dữ liệu
-  console.log("body request: ", username, email);
+  console.log("body request: ", username, email, password);
 
-  const result = createUser(username, email)
+  const result = await createUser(username, email, password)
+  console.log("Kết quả controller : ", result);
+  
   // Trả về response
   return res.status(200).json({
     message: "Thêm mới user thành công",
@@ -33,8 +36,19 @@ const postUser = async (req, res) => {
 
 };
 
+const getRoleUserController = async (req, res )=> {
+  const {id} = req.query
+  
+  const result = await getRoleUser(id)
+  return res.status(200).json({
+    message: "Lấy quyền truy cập theo của người dùng thành công",
+    data: result,
+  });
+}
+
 module.exports = {
   getHomepage,
   fetchAllUser,
   postUser,
+  getRoleUserController
 };

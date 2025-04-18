@@ -1,5 +1,5 @@
 const express = require('express');
-const { fetchAllUser, postUser } = require('../controllers/userController');
+const { fetchAllUser, postUser, getRoleUserController } = require('../controllers/userController');
 
 const userRoute = express.Router();
 
@@ -21,4 +21,5 @@ userRoute.get("/", (req, res) => {
 userRoute.get('/users',fetchAllUser);
 
 userRoute.post('/user', postUser)
+userRoute.get("/get_role_user", getRoleUserController)
 module.exports = userRoute; //export default
