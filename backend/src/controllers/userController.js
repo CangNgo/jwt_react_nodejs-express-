@@ -8,8 +8,8 @@ const fetchAllUser = async (req, res) => {
   try {
     const users = await getAllUsers();
     return res.status(200).json({
-        message: "Lấy toàn bộ user thành công", 
-        data: users
+      message: "Lấy toàn bộ user thành công",
+      data: users
     })
   } catch (error) {
     console.log(error);
@@ -18,26 +18,19 @@ const fetchAllUser = async (req, res) => {
 };
 
 const postUser = async (req, res) => {
-  try {
-    const body = req.body;
-    console.log(body); // Body đã được parse thành object JavaScript
-    const { name, email } = body;
-    // Xử lý dữ liệu
-    // Ví dụ: const { name, email } = body;
-    console.log("body request: ", name, email);
-    
-    const res = createUser(name, email)
-    // Trả về response
-    return res.status(200).json({
-      message: "Thêm mới user thành công",
-      data: res,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      message: "Lỗi Khi thêm mới user",
-    });
-  }
+  const body = req.body;
+  console.log(body); // Body đã được parse thành object JavaScript
+  const { username, email } = body;
+  // Xử lý dữ liệu
+  console.log("body request: ", username, email);
+
+  const result = createUser(username, email)
+  // Trả về response
+  return res.status(200).json({
+    message: "Thêm mới user thành công",
+    data: result,
+  });
+
 };
 
 module.exports = {

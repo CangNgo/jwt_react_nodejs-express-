@@ -20,7 +20,6 @@ const getRolesController = async (req, res ) => {
     } catch (error) {
         console.log("Lỗi khi lấy toàn bộ danh sách quyền truy cập");
         throw error
-        
     }
 }
 

@@ -19,7 +19,6 @@ const getUserUnique = async (id) => {
         id : id
       }
     })
-
     return user
   } catch (error) {
     console.log("Lỗi khi lấy thông tin theo id");
@@ -41,9 +40,33 @@ const createUser = async (name, email) => {
   }
 };
 
+const updateUser = async (id, user ) => {
+  try {
+    const userById = prisma.user.findUnique({
+      where : { 
+        id : id
+      }
+    })
+    if(userById != null) { 
+      userById.email = user.email
+      const re = prisma.updateUser(id, userById)
+      return re 
+    }else{ 
+      console.log("Không tim thấy thông tin người dùng id = ", id);
+      throw error("Không tìm thấy thông tin người dùng")
+    }
+
+  } catch (error) {
+    console.log("Lỗi khi cập nhật thông tin người dùng ");
+    throw error    
+    
+  }
+}
+
 
 //export các method
 module.exports = {
   createUser,
   getAllUsers,
+  getUserUnique,
 };
