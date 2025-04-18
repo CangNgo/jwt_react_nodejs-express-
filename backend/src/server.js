@@ -5,7 +5,7 @@ const userAPI = require("./routes/userRouter");
 const { getHomepage } = require("./controllers/userController");
 const { PrismaClient } = require("@prisma/client");
 const cors = require("cors");
-const { roleRout } = require("./routes/roleRouter");
+const  roleRoute = require("./routes/roleRouter");
 const userRoute = require("./routes/userRouter");
 const app = express();
 const port = process.env.PORT || 8888;
@@ -27,7 +27,7 @@ app.use("/", webAPI);
 
 //khai báo userAPI
 app.use(prefix, userRoute);
-app.use(prefix, roleRout);
+app.use(prefix, roleRoute);
 
 
 ;

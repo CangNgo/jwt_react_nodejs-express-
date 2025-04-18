@@ -22,6 +22,7 @@ model user {
   comment     comment[]
   likePost    likePost[]
   likeComment likeComment[]
+  complaint   complaint[]
 
   createdAt DateTime @default(now())
   createdBy Int?
@@ -57,6 +58,7 @@ model post {
   likePost     likePost[]
   likeComment  likeComment[]
   hastagDetail hastagDetail[]
+  complaint    complaint[]
 
   createdAt DateTime @default(now())
   createdBy Int?
@@ -191,16 +193,27 @@ model policy {
 }
 
 model complaint {
-  id           Int      @id @default(autoincrement())
-  complainType String
-  ownerId      Int
-  policyId     Int
-  dateTime     DateTime @default(now())
-  status       Boolean  @default(false)
+  id            Int           @id @default(autoincrement())
+  complainType  Int
+  ownerId       Int
+  policyId      Int
+  dateTime      DateTime      @default(now())
+  status        Boolean       @default(false)
+  userId        Int
+  postId        Int
+  complaintType complaintType @relation(fields: [complainType], references: [id])
+  user          user          @relation(fields: [userId], references: [id])
+  post          post          @relation(fields: [postId], references: [id])
 
   createdAt DateTime @default(now())
   createdBy Int?
   updatedAt DateTime @updatedAt
   updatedBy Int?
   deleted   Boolean  @default(false)
+}
+
+model complaintType {
+  id        Int         @id @default(autoincrement())
+  name      String
+  complaint complaint[]
 }

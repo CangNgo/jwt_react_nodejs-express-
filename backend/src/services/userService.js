@@ -1,5 +1,6 @@
 const { prisma } = require("../config/database");
 
+//Lấy toàn bộ thông tin user
 const getAllUsers = async () => {
   try {
     const users = await prisma.user.findMany();
@@ -10,6 +11,23 @@ const getAllUsers = async () => {
   }
 };
 
+//Lấy thông tin theo trường unique(duy nhất): các trường unique hoặc id
+const getUserUnique = async (id) => { 
+  try {
+    const user = prisma.user.findUnique({
+      where: { //Điều kiện
+        id : id
+      }
+    })
+
+    return user
+  } catch (error) {
+    console.log("Lỗi khi lấy thông tin theo id");
+    throw error
+  }
+}
+
+//Tạo mới user
 const createUser = async (name, email) => {
   try {
     const create = await prisma.user.create({
@@ -23,6 +41,8 @@ const createUser = async (name, email) => {
   }
 };
 
+
+//export các method
 module.exports = {
   createUser,
   getAllUsers,
