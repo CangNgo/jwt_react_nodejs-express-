@@ -14,9 +14,9 @@ const getAllUsers = async () => {
 //Lấy thông tin theo trường unique(duy nhất): các trường unique hoặc id
 const getUserUnique = async (id) => {
   try {
-    const user = prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { //Điều kiện
-        id: id
+        id: parseInt(id)
       }
     })
     return user
@@ -101,6 +101,23 @@ const getRoleUser = async (id)=>{
   }
 }
 
+const getAllUserRole = async (id) => {
+  try {
+    const result = await prisma.user.findUnique({
+      where :{
+        id : parseInt(id) 
+      }, 
+      include: {
+        role: true
+      }
+    })
+    return result
+  } catch (error) {
+    console.log("Lỗi khi lấy toàn bộ column user role")
+    throw error
+  }
+}
+
 
 
 //export các method
@@ -109,4 +126,5 @@ module.exports = {
   getAllUsers,
   getUserUnique,
   getRoleUser,
+  getAllUserRole
 };

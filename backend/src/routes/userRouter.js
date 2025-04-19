@@ -1,5 +1,5 @@
 const express = require('express');
-const { fetchAllUser, postUser, getRoleUserController } = require('../controllers/userController');
+const { fetchAllUser, postUser, getRoleUserController, getAllUserRoleController, getUserById } = require('../controllers/userController');
 
 const userRoute = express.Router();
 
@@ -19,7 +19,8 @@ userRoute.get("/", (req, res) => {
 })
 
 userRoute.get('/users',fetchAllUser);
-
+userRoute.get("/get_user", getUserById)
 userRoute.post('/user', postUser)
 userRoute.get("/get_role_user", getRoleUserController)
+userRoute.get("/get_all_role_user", getAllUserRoleController)
 module.exports = userRoute; //export default

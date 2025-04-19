@@ -1,4 +1,4 @@
-const { createRole, getRoles } = require("../services/roleService")
+const { createRole, getRoles, getRoleIdOrName } = require("../services/roleService")
 
 const createRoleController = async (req, res ) => {
         const { name , description} = req.body
@@ -22,7 +22,18 @@ const getRolesController = async (req, res ) => {
     }
 }
 
+const getRoleIdOrNameController = async (req, res )=> {
+    const {id, name} = req.query
+    
+    const result = await getRoleIdOrName(id, name)
+    return res.status(200).json({
+      message: "Lấy quyền thông tin quyền truy cập theo id hoặc name",
+      data: result,
+    });
+  }
+
 module.exports = {
     createRoleController, 
     getRolesController,
+    getRoleIdOrNameController
 }
