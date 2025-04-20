@@ -46,7 +46,9 @@ const getRoleIdOrName = async (id, name) => {
       whereClause.OR.push({ name });
     }
     const roles = await prisma.role.findMany({
-      where: whereClause
+      where: {
+        OR: [{ id: parseInt(id) }, { name: name }],
+      },
     });
     return roles;
   } catch (error) {

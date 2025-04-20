@@ -118,7 +118,44 @@ const getAllUserRole = async (id) => {
   }
 }
 
+const getUserUsernameAndEmail = async (username, email) => {
+  try {
+    const result = await prisma.user.findMany({
+      where :{
+        AND: [
+          {username:username}, {email:email}
+        ]
+      }
+    })
+    return result
+  } catch (error) {
+    console.log("Lỗi khi lấy thông tin user theo username và password")
+    throw error
+  }
+}
 
+const getUserAndRoleBSelect = async (id) => {
+  try {
+    const result = await prisma.user.findUnique({
+      where :{
+        id: parseInt(id)
+      }, 
+      select: {
+        username: true, 
+        email: true, 
+        role: {
+          select: {
+            name: true
+          }
+        }
+      }
+    })
+    return result
+  } catch (error) {
+    console.log("Lỗi khi lấy thông tin user theo username và password")
+    throw error
+  }
+}
 
 //export các method
 module.exports = {
@@ -126,5 +163,7 @@ module.exports = {
   getAllUsers,
   getUserUnique,
   getRoleUser,
-  getAllUserRole
+  getAllUserRole, 
+  getUserUsernameAndEmail,
+  getUserAndRoleBSelect
 };
