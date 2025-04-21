@@ -1,6 +1,8 @@
-const { prisma } = require("../config/database");
-
-const createRole = async (name, description) => {
+import { EOF } from "dns";
+import prisma from "../config/database"
+import { BadRequestException } from "../exceptions/bad_request";
+import { ErrorCode } from "../exceptions/root";
+export const createRole = async (name: string, description: string) => {
   try {
     const role = await prisma.role.create({
       data: { name, description },
@@ -12,7 +14,7 @@ const createRole = async (name, description) => {
   }
 };
 
-const getRoles = async () => {
+export const getRoles = async () => {
   try {
     const roles = await prisma.role.findMany({
       orderBy: {
@@ -26,28 +28,15 @@ const getRoles = async () => {
   }
 };
 
-const getRoleIdOrName = async (id, name) => {
+export const getRoleIdOrName = async (id: number, name: string) => {
   try {
     // Chuyển đổi id thành số nguyên, kiểm tra tính hợp lệ
-    const parsedId = id ? parseInt(String(id), 10) : undefined;
-    if (id && isNaN(parsedId)) {
-      throw new Error("ID không hợp lệ, phải là một số");
-    }
+    if (!id) throw new BadRequestException("Không tìm thấy id người dùng", ErrorCode.USER_NOT_FOUND)
+    const parsedId: number = parseInt(String(id), 10)
 
-    // Tạo điều kiện where
-    const whereClause = {
-      OR: [],
-    };
-
-    if (parsedId) {
-      whereClause.OR.push({ id: parsedId });
-    }
-    if (name) {
-      whereClause.OR.push({ name });
-    }
     const roles = await prisma.role.findMany({
       where: {
-        OR: [{ id: parseInt(id) }, { name: name }],
+        OR: [{ id: id }, { name: name }],
       },
     });
     return roles;
@@ -57,8 +46,3 @@ const getRoleIdOrName = async (id, name) => {
   }
 };
 
-module.exports = {
-  createRole,
-  getRoles,
-  getRoleIdOrName,
-};

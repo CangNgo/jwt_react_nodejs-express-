@@ -1,12 +1,13 @@
 import { log } from "console";
-import express from "express";
- 
+import express, { Request, Response } from "express";
+import { PORT } from "./secrets";
+import rootRoutes from "./routes";
 const app = express()
+const prefix:string = "/api/v1"
 
-app.get("/", (req, res) =>{
-    console.log("hello ")
-})
 
-app.listen(3000, () => {
-    console.log("Working: http://localhost:3000/");
+app.use(prefix, rootRoutes)
+
+app.listen(PORT, () => {
+    console.log("Working: http://localhost:8080/");
 })

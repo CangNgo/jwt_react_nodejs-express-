@@ -1,4 +1,3 @@
-const { prisma } = require("../config/database");
 
 //Lấy toàn bộ thông tin user
 const getAllUsers = async () => {
