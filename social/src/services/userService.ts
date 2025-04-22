@@ -1,6 +1,8 @@
+import { user } from "@prisma/client";
+import prisma from "../config/database";
 
 //Lấy toàn bộ thông tin user
-const getAllUsers = async () => {
+export const getAllUsers = async () => {
   try {
     const users = await prisma.user.findMany();
     return users; // Sửa từ res.send(users.json)
@@ -11,11 +13,11 @@ const getAllUsers = async () => {
 };
 
 //Lấy thông tin theo trường unique(duy nhất): các trường unique hoặc id
-const getUserUnique = async (id) => {
+export const getUserUnique = async (id:number) => {
   try {
     const user = await prisma.user.findUnique({
       where: { //Điều kiện
-        id: parseInt(id)
+        id: id
       }
     })
     return user
@@ -26,11 +28,11 @@ const getUserUnique = async (id) => {
 }
 
 //Tạo mới user
-const createUser = async (username, email, password) => {
+export const createUser = async (username:string, email:string, password:string) => {
   try {
-    const roleUser = await prisma.role.findUniqueOrThrow({
+    const roleUser = await prisma.role.findFirstOrThrow({
       where : {
-        name : "USER"
+        name : "User"
       }, 
       select: {
         id: true
@@ -53,20 +55,24 @@ const createUser = async (username, email, password) => {
   }
 };
 
-const updateUser = async (id, user) => {
+export const updateUser = async (id:number, user:user) => {
   try {
-    const userById = prisma.user.findUnique({
+    const userById = await prisma.user.findUnique({
       where: {
         id: id
       }
     })
     if (userById != null) {
       userById.email = user.email
-      const re = prisma.updateUser(id, userById)
+      const re = prisma.user.update({
+        where: {id}, 
+        data: {
+          email: userById.email
+        }
+      })
       return re
     } else {
       console.log("Không tim thấy thông tin người dùng id = ", id);
-      throw error("Không tìm thấy thông tin người dùng")
     }
 
   } catch (error) {
@@ -76,11 +82,11 @@ const updateUser = async (id, user) => {
   }
 }
 
-const getRoleUser = async (id)=>{ 
+export const getRoleUser = async (id:number)=>{ 
   try {
     const roleUser = await prisma.user.findUniqueOrThrow({
       where: {
-        id: parseInt(id)
+        id: id
       }, 
       select: {
         username: true, 
@@ -100,11 +106,11 @@ const getRoleUser = async (id)=>{
   }
 }
 
-const getAllUserRole = async (id) => {
+export const getAllUserRole = async (id:number) => {
   try {
     const result = await prisma.user.findUnique({
       where :{
-        id : parseInt(id) 
+        id : id
       }, 
       include: {
         role: true
@@ -117,7 +123,7 @@ const getAllUserRole = async (id) => {
   }
 }
 
-const getUserUsernameAndEmail = async (username, email) => {
+export const getUserUsernameAndEmail = async (username:string, email:string) => {
   try {
     const result = await prisma.user.findMany({
       where :{
@@ -133,11 +139,11 @@ const getUserUsernameAndEmail = async (username, email) => {
   }
 }
 
-const getUserAndRoleBSelect = async (id) => {
+export const getUserAndRoleBSelect = async (id:number) => {
   try {
     const result = await prisma.user.findUnique({
       where :{
-        id: parseInt(id)
+        id: id
       }, 
       select: {
         username: true, 
@@ -156,13 +162,3 @@ const getUserAndRoleBSelect = async (id) => {
   }
 }
 
-//export các method
-module.exports = {
-  createUser,
-  getAllUsers,
-  getUserUnique,
-  getRoleUser,
-  getAllUserRole, 
-  getUserUsernameAndEmail,
-  getUserAndRoleBSelect
-};
