@@ -1,23 +1,16 @@
 import { Request, Response } from "express";
 
-const { getRoles } = require("../services/roleService");
-const {
-  getAllUsers,
-  createUser,
-  getAllUserRole,
-  getUserUnique,
-  getUserUsernameAndEmail,
-  getUserAndRoleBSelect,
-} = require("../services/userService");
+import { createUser, getAllUserRole, getAllUsers, getUserAndRoleBSelect, getUserUnique, getUserUsernameAndEmail } from "../services/userService";
 
-export const getHomepage = async (req: Request, res: Response) => {
+
+export const getHomepage = async (req:Request, res:Response) => {
    res.render("sample.ejs");
 };
 
-export const fetchAllUser = async (req: Request, res: Response) => {
+export const fetchAllUser = async (req:Request, res:Response) => {
   try {
     const users = await getAllUsers();
-    res.status(200).json({
+     res.status(200).json({
       message: "Lấy toàn bộ user thành công",
       data: users,
     });
@@ -27,10 +20,11 @@ export const fetchAllUser = async (req: Request, res: Response) => {
   }
 };
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req:Request, res:Response) => {
   try {
-    const { id } = req.query;
-    const users = await getUserUnique(id);
+    const { id } = req.params;
+
+    const users = await getUserUnique(Number(id));
      res.status(200).json({
       message: "Lấy toàn bộ thông tin user thành công",
       data: users,
@@ -41,7 +35,7 @@ export const getUserById = async (req: Request, res: Response) => {
   }
 };
 
-export const postUser = async (req: Request, res: Response) => {
+export const postUser = async (req:Request, res:Response) => {
   const body = req.body;
   console.log(body); // Body đã được parse thành object JavaScript
   const { username, email, password } = body;
@@ -58,43 +52,37 @@ export const postUser = async (req: Request, res: Response) => {
   });
 };
 
-export const getRoleUserController = async (req: Request, res: Response) => {
+export const getRoleUserController = async (req:Request, res:Response) => {
   const { id } = req.query;
 
-  const result = await getAllUserRole(id);
+  const result = await getAllUserRole(Number(id));
    res.status(200).json({
     message: "Lấy quyền truy cập theo của người dùng thành công",
     data: result,
   });
 };
 
-export const getAllUserRoleController = async (req: Request, res: Response) => {
+export const getAllUserRoleController = async (req:Request, res:Response) => {
   const { id } = req.query;
 
-  const result = await getAllUserRole(id);
+  const result = await getAllUserRole(Number(id));
    res.status(200).json({
     message: "Lấy quyền thông tin người dùng và quyền truy cập thành công",
     data: result,
   });
 };
 
-export const getUserByUsernameAndEmailControler = async (
-  req: Request,
-  res: Response
-) => {
+export const getUserByUsernameAndEmailControler = async (req:Request, res:Response) => {
   const { username, email } = req.query;
 
-  const result = await getUserUsernameAndEmail(username, email);
+  const result = await getUserUsernameAndEmail(String(username), String(email));
    res.status(200).json({
     message: "Lấy quyền thông tin người dùng và quyền truy cập thành công",
     data: result,
   });
 };
 
-export const getUserBySelectController = async (
-  req: Request,
-  res: Response
-) => {
+export const getUserBySelectController = async (req:Request, res:Response) => {
   const { id } = req.query;
 
   const result = await getUserAndRoleBSelect(Number(id));

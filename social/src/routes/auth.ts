@@ -3,7 +3,7 @@ import { login } from "../controllers/authController";
 
 const authRoutes:Router = Router()
 
-authRoutes.get("/login", login)
+authRoutes.get("auth/login", login)
 
 
 export default authRoutes
