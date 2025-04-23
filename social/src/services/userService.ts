@@ -1,6 +1,7 @@
 import prisma from "../config/database";
-import { user } from '@prisma/client';
-
+import { user } from "@prisma/client";
+import  bcrypt from 'bcryptjs';
+const seltHash = 12;
 //Lấy toàn bộ thông tin user
 export const getAllUsers = async () => {
   try {
@@ -13,39 +14,46 @@ export const getAllUsers = async () => {
 };
 
 //Lấy thông tin theo trường unique(duy nhất): các trường unique hoặc id
-export const getUserUnique = async (id:number) => {
+export const getUserUnique = async (id: number) => {
   try {
     const user = await prisma.user.findUnique({
-      where: { //Điều kiện
-        id: id
-      }
-    })
-    return user
+      where: {
+        //Điều kiện
+        id: id,
+      },
+    });
+    return user;
   } catch (error) {
     console.log("Lỗi khi lấy thông tin theo id");
-    throw error
+    throw error;
   }
-}
+};
 
 //Tạo mới user
-export const createUser = async (username:string, email:string, password:string) => {
+export const createUser = async (
+  username: string,
+  email: string,
+  password: string
+) => {
   try {
+    //hash password
+    const hashPassword = await bcrypt.hash(password, seltHash);
     const roleUser = await prisma.role.findFirstOrThrow({
-      where : {
-        name : "User"
-      }, 
+      where: {
+        name: "User",
+      },
       select: {
-        id: true
-      }
-    })
+        id: true,
+      },
+    });
     const create = await prisma.user.create({
       data: {
         username,
         email,
-        password,
-        profileId : null, 
-        role_id: roleUser.id
-      }
+        password: hashPassword,
+        profileId: null,
+        role_id: roleUser.id,
+      },
     });
 
     return create;
@@ -55,110 +63,107 @@ export const createUser = async (username:string, email:string, password:string)
   }
 };
 
-export const updateUser = async (id:number, user:user) => {
+export const updateUser = async (id: number, user: user) => {
   try {
     const userById = await prisma.user.findUnique({
       where: {
-        id: id
-      }
-    })
+        id: id,
+      },
+    });
     if (userById != null) {
-      userById.email = user.email
+      userById.email = user.email;
       const re = prisma.user.update({
-        where: {id}, 
+        where: { id },
         data: {
-          email: userById.email
-        }
-      })
-      return re
+          email: userById.email,
+        },
+      });
+      return re;
     } else {
       console.log("Không tim thấy thông tin người dùng id = ", id);
     }
-
   } catch (error) {
     console.log("Lỗi khi cập nhật thông tin người dùng ");
-    throw error
-
+    throw error;
   }
-}
+};
 
-export const getRoleUser = async (id:number)=>{ 
+export const getRoleUser = async (id: number) => {
   try {
     const roleUser = await prisma.user.findUniqueOrThrow({
       where: {
-        id: id
-      }, 
+        id: id,
+      },
       select: {
-        username: true, 
+        username: true,
         role: {
           select: {
-            name: true
-          }
-        }
-      }
-    })
+            name: true,
+          },
+        },
+      },
+    });
 
-    return roleUser
+    return roleUser;
   } catch (error) {
     console.log("Lỗi khi lấy quyền truy cập của user");
-    throw error  
-    
+    throw error;
   }
-}
+};
 
-export const getAllUserRole = async (id:number) => {
+export const getAllUserRole = async (id: number) => {
   try {
     const result = await prisma.user.findUnique({
-      where :{
-        id : id
-      }, 
+      where: {
+        id: id,
+      },
       include: {
-        role: true
-      }
-    })
-    return result
+        role: true,
+      },
+    });
+    return result;
   } catch (error) {
-    console.log("Lỗi khi lấy toàn bộ column user role")
-    throw error
+    console.log("Lỗi khi lấy toàn bộ column user role");
+    throw error;
   }
-}
+};
 
-export const getUserUsernameAndEmail = async (username:string, email:string) => {
+export const getUserUsernameAndEmail = async (
+  username: string,
+  email: string
+) => {
   try {
     const result = await prisma.user.findMany({
-      where :{
-        AND: [
-          {username:username}, {email:email}
-        ]
-      }
-    })
-    return result
+      where: {
+        AND: [{ username: username }, { email: email }],
+      },
+    });
+    return result;
   } catch (error) {
-    console.log("Lỗi khi lấy thông tin user theo username và password")
-    throw error
+    console.log("Lỗi khi lấy thông tin user theo username và password");
+    throw error;
   }
-}
+};
 
-export const getUserAndRoleBSelect = async (id:number) => {
+export const getUserAndRoleBSelect = async (id: number) => {
   try {
     const result = await prisma.user.findUnique({
-      where :{
-        id: id
-      }, 
+      where: {
+        id: id,
+      },
       select: {
-        username: true, 
-        email: true, 
+        username: true,
+        email: true,
         role: {
           select: {
-            name: true
-          }
-        }
-      }
-    })
-    return result
+            name: true,
+          },
+        },
+      },
+    });
+    return result;
   } catch (error) {
-    console.log("Lỗi khi lấy thông tin user theo username và password")
-    throw error
+    console.log("Lỗi khi lấy thông tin user theo username và password");
+    throw error;
   }
-}
-
+};

@@ -22,7 +22,6 @@ userRoute.get("/", (req: Request, res: Response) => {
 
 userRoute.get('/users', fetchAllUser);
 userRoute.get("/user/:id", getUserById)
-userRoute.post('/user', postUser)
 userRoute.get("/user/get_role_user", getRoleUserController)
 userRoute.get("/user/get_all_role_user", getAllUserRoleController)
 userRoute.get("/user/get_user_username_email", getUserByUsernameAndEmailControler)
